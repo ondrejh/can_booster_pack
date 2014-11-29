@@ -40,7 +40,7 @@
 #
 # Defines the part type that this project uses.
 #
-PART=LM4F232H5BB
+PART=TM4C123GH6PM
 
 #
 # The base directory for TivaWare.

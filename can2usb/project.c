@@ -84,13 +84,13 @@ main(void)
     //
     // Enable the GPIO module.
     //
-    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
     ROM_SysCtlDelay(1);
 
     //
-    // Configure PA1 as an output.
+    // Configure PF1 as an output.
     //
-    ROM_GPIOPinTypeGPIOOutput(GPIO_PORTA_BASE, GPIO_PIN_1);
+    ROM_GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_1);
 
     //
     // Loop forever.
@@ -100,7 +100,7 @@ main(void)
         //
         // Set the GPIO high.
         //
-        ROM_GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_1, GPIO_PIN_1);
+        ROM_GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, GPIO_PIN_1);
 
         //
         // Delay for a while.
@@ -110,7 +110,7 @@ main(void)
         //
         // Set the GPIO low.
         //
-        ROM_GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_1, 0);
+        ROM_GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, 0);
 
         //
         // Delay for a while.
