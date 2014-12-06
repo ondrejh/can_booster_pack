@@ -1,4 +1,4 @@
-update=Pá 5. prosinec 2014, 21:30:16 CET
+update=So 6. prosinec 2014, 11:02:38 CET
 version=1
 last_client=kicad
 [cvpcb]
@@ -46,12 +46,12 @@ LibName31=bus_choke
 [pcbnew]
 version=1
 PageLayoutDescrFile=
-LastNetListRead=
-UseCmpFile=1
-PadDrill=0.6
-PadDrillOvalY=0.6
-PadSizeH=1.5
-PadSizeV=1.5
+LastNetListRead=canboost.net
+UseCmpFile=0
+PadDrill=0
+PadDrillOvalY=0
+PadSizeH=1.7
+PadSizeV=1.9
 PcbTextSizeV=1.5
 PcbTextSizeH=1.5
 PcbTextThickness=0.3
@@ -61,5 +61,5 @@ ModuleTextSizeThickness=0.15
 SolderMaskClearance=0
 SolderMaskMinWidth=0
 DrawSegmentWidth=0.2
-BoardOutlineThickness=0.09999999999999999
+BoardOutlineThickness=0.2
 ModuleOutlineThickness=0.15
