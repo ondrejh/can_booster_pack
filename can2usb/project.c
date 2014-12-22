@@ -45,7 +45,7 @@
 #include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
 #include "driverlib/can.h"
-#include "driverlib/debug.h" // co to dela?
+#include "driverlib/debug.h"
 #include "driverlib/gpio.h"
 #include "driverlib/interrupt.h"
 #include "driverlib/pin_map.h"
@@ -95,6 +95,33 @@ void debugConsoleInit(void)
   UARTStdioConfig(0, 1000000, 16000000);
 }
 
+volatile uint32_t g_ui32MsgCount = 0;
+volatile bool g_bRXFlag = 0;
+volatile bool g_bErrFlag = 0;
+
+void CANIntHandler(void)
+{
+  uint32_t ui32Status;
+
+  ui32Status = CANIntStatus(CAN0_BASE, CAN_INT_STS_CAUSE);
+
+  // controller status interrupt
+  if (ui32Status == CAN_INT_INTID_STATUS) {
+    ui32Status = CANStatusGet(CAN0_BASE, CAN_STS_CONTROL);
+    g_bErrFlag = 1;
+  }
+  // receive message
+  else if (ui32Status == 1) {
+    CANIntClear(CAN0_BASE, 1);
+    g_ui32MsgCount++;
+    g_bRXFlag = 1;
+    g_bErrFlag = 0;
+  }
+  // this should never happen
+  else {
+  }
+}
+
 //*****************************************************************************
 //
 // Toggle a GPIO.
@@ -103,23 +130,64 @@ void debugConsoleInit(void)
 int main(void)
 {
     debugConsoleInit();
+
+    tCANMsgObject sCANMessage;
+    uint8_t pui8MsgData[8];
+
+    SysCtlClockSet(SYSCTL_SYSDIV_1 | SYSCTL_USE_OSC | SYSCTL_OSC_MAIN | SYSCTL_XTAL_16MHZ);
+
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
+    GPIOPinConfigure(GPIO_PE4_CAN0RX);
+    GPIOPinConfigure(GPIO_PE5_CAN0TX);
+    GPIOPinTypeCAN(GPIO_PORTE_BASE, GPIO_PIN_4 | GPIO_PIN_5);
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_CAN0);
+    CANInit(CAN0_BASE);
+    CANBitRateSet(CAN0_BASE, SysCtlClockGet(), 250000);
+    CANIntEnable(CAN0_BASE, CAN_INT_MASTER | CAN_INT_ERROR | CAN_INT_STATUS);
+    IntEnable(INT_CAN0);
+    CANEnable(CAN0_BASE);
+
+    sCANMessage.ui32MsgID = 0;
+    sCANMessage.ui32MsgIDMask = 0;
+    sCANMessage.ui32Flags = MSG_OBJ_RX_INT_ENABLE | MSG_OBJ_USE_ID_FILTER;
+    sCANMessage.ui32MsgLen = 8;
+
+    CANMessageSet(CAN0_BASE, 1, &sCANMessage, MSG_OBJ_TYPE_RX);
+
     //
     // Enable the GPIO module.
     //
-    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
-    ROM_SysCtlDelay(1);
-
-    //
-    // Configure PF1 as an output.
-    //
-    ROM_GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_1);
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
+    GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_1);
 
     //
     // Loop forever.
     //
     while(1)
     {
-        static int cnt = 0;
+        unsigned int uIdx;
+
+        if (g_bRXFlag) {
+            GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, GPIO_PIN_1);
+
+            sCANMessage.pui8MsgData = pui8MsgData;
+            CANMessageGet(CAN0_BASE, 1, &sCANMessage, 0);
+            g_bRXFlag = 0;
+            if(sCANMessage.ui32Flags & MSG_OBJ_DATA_LOST) {
+                UARTprintf("CAN message loss detected\n");
+                sCANMessage.ui32Flags &= ~MSG_OBJ_DATA_LOST;
+                CANMessageSet(CAN0_BASE, 1, &sCANMessage, MSG_OBJ_TYPE_RX);
+            }
+            UARTprintf("Msg ID=0x%08X len=%u data=0x",sCANMessage.ui32MsgID, sCANMessage.ui32MsgLen);
+            for (uIdx = 0; uIdx<sCANMessage.ui32MsgLen; uIdx++)
+                UARTprintf("%02X ",pui8MsgData[uIdx]);
+            UARTprintf("total count=%u\n",g_ui32MsgCount);
+
+            SysCtlDelay(100000);
+            GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, 0);
+        }
+
+        /*static int cnt = 0;
         UARTprintf("ahoj vole %d\n",cnt++);
         //
         // Set the GPIO high.
@@ -139,6 +207,6 @@ int main(void)
         //
         // Delay for a while.
         //
-        ROM_SysCtlDelay(10000000);
+        ROM_SysCtlDelay(10000000);*/
     }
 }

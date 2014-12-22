@@ -89,6 +89,7 @@ ${COMPILER}:
 ${COMPILER}/project.axf: ${COMPILER}/startup_${COMPILER}.o
 ${COMPILER}/project.axf: ${COMPILER}/project.o
 ${COMPILER}/project.axf: ${COMPILER}/uartstdio.o
+#${COMPILER}/project.axf: ${COMPILER}/can.o
 ${COMPILER}/project.axf: ${ROOT}/grlib/${COMPILER}/libgr.a
 ${COMPILER}/project.axf: ${ROOT}/driverlib/${COMPILER}/libdriver.a
 ${COMPILER}/project.axf: project.ld
