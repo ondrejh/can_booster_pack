@@ -53,6 +53,11 @@ ROOT=../..
 include ${ROOT}/makedefs
 
 #
+# Where to find source files that do not live in this directory.
+#
+VPATH=../../utils
+
+#
 # Where to find header files that do not live in the source directory.
 #
 IPATH=../..
@@ -80,8 +85,11 @@ ${COMPILER}:
 #
 # Rules for building the project example.
 #
-${COMPILER}/project.axf: ${COMPILER}/project.o
+#${COMPILER}/project.axf: ${COMPILER}/cfa196x64x16.o
 ${COMPILER}/project.axf: ${COMPILER}/startup_${COMPILER}.o
+${COMPILER}/project.axf: ${COMPILER}/project.o
+${COMPILER}/project.axf: ${COMPILER}/uartstdio.o
+${COMPILER}/project.axf: ${ROOT}/grlib/${COMPILER}/libgr.a
 ${COMPILER}/project.axf: ${ROOT}/driverlib/${COMPILER}/libdriver.a
 ${COMPILER}/project.axf: project.ld
 SCATTERgcc_project=project.ld

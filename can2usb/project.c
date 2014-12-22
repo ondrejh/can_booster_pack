@@ -40,11 +40,19 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include "inc/hw_can.h"
+#include "inc/hw_ints.h"
 #include "inc/hw_memmap.h"
-#include "driverlib/debug.h"
+#include "inc/hw_types.h"
+#include "driverlib/can.h"
+#include "driverlib/debug.h" // co to dela?
 #include "driverlib/gpio.h"
+#include "driverlib/interrupt.h"
+#include "driverlib/pin_map.h"
 #include "driverlib/rom.h"
 #include "driverlib/sysctl.h"
+#include "driverlib/uart.h"
+#include "utils/uartstdio.h"
 
 //*****************************************************************************
 //
@@ -73,14 +81,28 @@ __error__(char *pcFilename, uint32_t ui32Line)
 }
 #endif
 
+void debugConsoleInit(void)
+{
+  // enable GPIO port A which is used for UART0
+  SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
+  GPIOPinConfigure(GPIO_PA0_U0RX);
+  GPIOPinConfigure(GPIO_PA1_U0TX);
+
+  // enable UART0
+  SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);
+  UARTClockSourceSet(UART0_BASE, UART_CLOCK_PIOSC); // use internal 16MHz osc.
+  GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
+  UARTStdioConfig(0, 1000000, 16000000);
+}
+
 //*****************************************************************************
 //
 // Toggle a GPIO.
 //
 //*****************************************************************************
-int
-main(void)
+int main(void)
 {
+    debugConsoleInit();
     //
     // Enable the GPIO module.
     //
@@ -97,6 +119,8 @@ main(void)
     //
     while(1)
     {
+        static int cnt = 0;
+        UARTprintf("ahoj vole %d\n",cnt++);
         //
         // Set the GPIO high.
         //
