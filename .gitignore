@@ -5,3 +5,4 @@ can2usb/gcc/*.bin
 can2usb/gcc/*.d
 can2usb/gcc/*.o
 *-bak
+can2usb/*.layout

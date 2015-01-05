@@ -174,16 +174,20 @@ int main(void)
             CANMessageGet(CAN0_BASE, 1, &sCANMessage, 0);
             g_bRXFlag = 0;
             if(sCANMessage.ui32Flags & MSG_OBJ_DATA_LOST) {
-                UARTprintf("CAN message loss detected\n");
+                UARTprintf(":ERROR\n");
                 sCANMessage.ui32Flags &= ~MSG_OBJ_DATA_LOST;
                 CANMessageSet(CAN0_BASE, 1, &sCANMessage, MSG_OBJ_TYPE_RX);
             }
-            UARTprintf("Msg ID=0x%08X len=%u data=0x",sCANMessage.ui32MsgID, sCANMessage.ui32MsgLen);
+            if (sCANMessage.ui32Flags & MSG_OBJ_EXTENDED_ID)
+                UARTprintf(":%08X."/*%u."*/,sCANMessage.ui32MsgID);//, sCANMessage.ui32MsgLen);
+            else
+                UARTprintf(":%03X.",sCANMessage.ui32MsgID);
             for (uIdx = 0; uIdx<sCANMessage.ui32MsgLen; uIdx++)
-                UARTprintf("%02X ",pui8MsgData[uIdx]);
-            UARTprintf("total count=%u\n",g_ui32MsgCount);
+                UARTprintf("%02X",pui8MsgData[uIdx]);
+            //UARTprintf("total count=%u\n",g_ui32MsgCount);
+            UARTprintf("\n");
 
-            SysCtlDelay(100000);
+            //SysCtlDelay(100000);
             GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, 0);
         }
 
