@@ -1,136 +1,195 @@
-Cmp-Mod V01 Created by Cvpcb 0.201412041631+5311~19~ubuntu14.04.1-product   date = So 6. prosinec 2014, 08:13:49 CET
+Cmp-Mod V01 Genere par PcbNew le 9.1.2015 7:51:19
 
 BeginCmp
-TimeStamp = /546E4606;
-Reference = C1;
-ValeurCmp = 100n;
-IdModule  = SMD_Packages:SMD-0805;
-EndCmp
-
-BeginCmp
-TimeStamp = /546F81F0;
-Reference = D1;
-ValeurCmp = ZENER;
-IdModule  = Diodes_SMD:Diode-SMA_Handsoldering;
-EndCmp
-
-BeginCmp
-TimeStamp = /546F81FF;
-Reference = D2;
-ValeurCmp = ZENER;
-IdModule  = Diodes_SMD:Diode-SMA_Handsoldering;
-EndCmp
-
-BeginCmp
-TimeStamp = /546F83C6;
+TimeStamp = 54AF78F7
+Path = 
 Reference = D3;
 ValeurCmp = LED;
 IdModule  = LEDs:LED-0805;
 EndCmp
 
 BeginCmp
-TimeStamp = /546F83D5;
+TimeStamp = 5482C448
+Path = /546F83C6
+Reference = D3;
+ValeurCmp = LED;
+IdModule  = LEDs:LED-0805;
+EndCmp
+
+BeginCmp
+TimeStamp = 5482DB18
+Path = 
+Reference = SYM;
+ValeurCmp = Symbol_OSHW-Logo_SilkScreen_07Jul2012;
+IdModule  = Symbols:Symbol_OSHW-Logo_SilkScreen;
+EndCmp
+
+BeginCmp
+TimeStamp = 5482D7EF
+Path = 
+Reference = SYM;
+ValeurCmp = Symbol_OSHW-Logo_CopperTop_Negative_07Jul2012;
+IdModule  = Symbols:Symbol_OSHW-Logo_CopperTop_Negative;
+EndCmp
+
+BeginCmp
+TimeStamp = 54821903
+Path = /546E4606
+Reference = C1;
+ValeurCmp = 100n;
+IdModule  = SMD_Packages:SMD-0805;
+EndCmp
+
+BeginCmp
+TimeStamp = 54821909
+Path = /546F81F0
+Reference = D1;
+ValeurCmp = ZENER;
+IdModule  = Diodes_SMD:Diode-SMA_Handsoldering;
+EndCmp
+
+BeginCmp
+TimeStamp = 5482190F
+Path = /546F81FF
+Reference = D2;
+ValeurCmp = ZENER;
+IdModule  = Diodes_SMD:Diode-SMA_Handsoldering;
+EndCmp
+
+BeginCmp
+TimeStamp = 5482C40C
+Path = /546F83D5
 Reference = D4;
 ValeurCmp = LED;
 IdModule  = LEDs:LED-0805;
 EndCmp
 
 BeginCmp
-TimeStamp = /546E4178;
+TimeStamp = 54821991
+Path = /546E4178
 Reference = IC1;
 ValeurCmp = MCP2551-I/SN;
 IdModule  = Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm;
 EndCmp
 
 BeginCmp
-TimeStamp = /546E425B;
+TimeStamp = 5482199D
+Path = /546E425B
 Reference = JP1;
 ValeurCmp = JUMPER;
 IdModule  = Pin_Headers:Pin_Header_Straight_1x02;
 EndCmp
 
 BeginCmp
-TimeStamp = /546F8F8B;
-Reference = L1;
-ValeurCmp = B82789C513N002;
-IdModule  = My footprints:SIMDAD_1812;
-EndCmp
-
-BeginCmp
-TimeStamp = /546E4C1D;
+TimeStamp = 548219C9
+Path = /546E4C1D
 Reference = P1;
 ValeurCmp = CONN_10X2;
 IdModule  = Pin_Headers:Pin_Header_Straight_2x10;
 EndCmp
 
 BeginCmp
-TimeStamp = /546E4C2C;
+TimeStamp = 548219E9
+Path = /546E4C2C
 Reference = P2;
 ValeurCmp = CONN_10X2;
 IdModule  = Pin_Headers:Pin_Header_Straight_2x10;
 EndCmp
 
 BeginCmp
-TimeStamp = /546E41AA;
+TimeStamp = 548219F8
+Path = /546E41AA
 Reference = P3;
 ValeurCmp = CONN_2;
 IdModule  = Sockets_MOLEX_KK-System:Socket_MOLEX-KK-RM3-96mm_Lock_2pin_straight;
 EndCmp
 
 BeginCmp
-TimeStamp = /546E4226;
-Reference = R1;
-ValeurCmp = 120;
-IdModule  = SMD_Packages:SMD-0805;
-EndCmp
-
-BeginCmp
-TimeStamp = /546E4345;
+TimeStamp = 54821A12
+Path = /546E4345
 Reference = R2;
 ValeurCmp = 1k0;
 IdModule  = SMD_Packages:SMD-0805;
 EndCmp
 
 BeginCmp
-TimeStamp = /546E451B;
+TimeStamp = 54821A1F
+Path = /546E451B
 Reference = R3;
 ValeurCmp = 100;
 IdModule  = SMD_Packages:SMD-0805;
 EndCmp
 
 BeginCmp
-TimeStamp = /546E44B9;
+TimeStamp = 54821A2C
+Path = /546E44B9
 Reference = R4;
 ValeurCmp = 100;
 IdModule  = SMD_Packages:SMD-0805;
 EndCmp
 
 BeginCmp
-TimeStamp = /546E4FCC;
-Reference = R5;
-ValeurCmp = 4R7;
-IdModule  = SMD_Packages:SMD-0805;
-EndCmp
-
-BeginCmp
-TimeStamp = /546E4F87;
-Reference = R6;
-ValeurCmp = 4R7;
-IdModule  = SMD_Packages:SMD-0805;
-EndCmp
-
-BeginCmp
-TimeStamp = /546F8416;
+TimeStamp = 5482C3D0
+Path = /546F8416
 Reference = R7;
 ValeurCmp = 470;
 IdModule  = SMD_Packages:SMD-0805;
 EndCmp
 
 BeginCmp
-TimeStamp = /546F8425;
+TimeStamp = 5482C3C2
+Path = /546F8425
 Reference = R8;
 ValeurCmp = 470;
 IdModule  = SMD_Packages:SMD-0805;
+EndCmp
+
+BeginCmp
+TimeStamp = 5482AF4A
+Path = /546E4226
+Reference = R1;
+ValeurCmp = 120;
+IdModule  = SMD_Packages:SMD-1206;
+EndCmp
+
+BeginCmp
+TimeStamp = 5482AF4F
+Path = /546E4FCC
+Reference = R5;
+ValeurCmp = 4R7;
+IdModule  = SMD_Packages:SMD-1206;
+EndCmp
+
+BeginCmp
+TimeStamp = 5482AF54
+Path = /546E4F87
+Reference = R6;
+ValeurCmp = 4R7;
+IdModule  = SMD_Packages:SMD-1206;
+EndCmp
+
+BeginCmp
+TimeStamp = 5482C9D4
+Path = 
+Reference = MH;
+ValeurCmp = MountingHole_4mm_RevA_Date21Jun2010;
+IdModule  = Mounting_Holes:MountingHole_4mm;
+EndCmp
+
+BeginCmp
+TimeStamp = 5482C9F2
+Path = 
+Reference = MH;
+ValeurCmp = MountingHole_4mm_RevA_Date21Jun2010;
+IdModule  = Mounting_Holes:MountingHole_4mm;
+EndCmp
+
+BeginCmp
+TimeStamp = 5482D534
+Path = /546F8F8B
+Reference = L1;
+ValeurCmp = B82789C513N002;
+IdModule  = My footprints:SIMDAD_1812;
 EndCmp
 
 EndListe
