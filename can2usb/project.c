@@ -52,6 +52,7 @@
 #include "driverlib/rom.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/uart.h"
+#include "driverlib/timer.h"
 #include "utils/uartstdio.h"
 
 //*****************************************************************************
@@ -136,6 +137,10 @@ int main(void)
 
     SysCtlClockSet(SYSCTL_SYSDIV_1 | SYSCTL_USE_OSC | SYSCTL_OSC_MAIN | SYSCTL_XTAL_16MHZ);
 
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER0);
+    TimerConfigure(TIMER0_BASE, TIMER_CFG_A_PERIODIC_UP);
+    TimerEnable(TIMER0_BASE, TIMER_A);
+
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
     GPIOPinConfigure(GPIO_PE4_CAN0RX);
     GPIOPinConfigure(GPIO_PE5_CAN0TX);
@@ -170,18 +175,21 @@ int main(void)
         if (g_bRXFlag) {
             GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, GPIO_PIN_1);
 
+            uint32_t t = TimerValueGet(TIMER0_BASE,TIMER_A);
+
             sCANMessage.pui8MsgData = pui8MsgData;
             CANMessageGet(CAN0_BASE, 1, &sCANMessage, 0);
             g_bRXFlag = 0;
+            UARTprintf(":%08X",t);
             if(sCANMessage.ui32Flags & MSG_OBJ_DATA_LOST) {
-                UARTprintf(":ERROR\n");
+                UARTprintf(".ERROR\n");
                 sCANMessage.ui32Flags &= ~MSG_OBJ_DATA_LOST;
                 CANMessageSet(CAN0_BASE, 1, &sCANMessage, MSG_OBJ_TYPE_RX);
             }
             if (sCANMessage.ui32Flags & MSG_OBJ_EXTENDED_ID)
-                UARTprintf(":%08X."/*%u."*/,sCANMessage.ui32MsgID);//, sCANMessage.ui32MsgLen);
+                UARTprintf(".%08X."/*%u."*/,sCANMessage.ui32MsgID);//, sCANMessage.ui32MsgLen);
             else
-                UARTprintf(":%03X.",sCANMessage.ui32MsgID);
+                UARTprintf(".%03X.",sCANMessage.ui32MsgID);
             for (uIdx = 0; uIdx<sCANMessage.ui32MsgLen; uIdx++)
                 UARTprintf("%02X",pui8MsgData[uIdx]);
             //UARTprintf("total count=%u\n",g_ui32MsgCount);
