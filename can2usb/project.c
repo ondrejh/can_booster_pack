@@ -138,8 +138,9 @@ int main(void)
     SysCtlClockSet(SYSCTL_SYSDIV_1 | SYSCTL_USE_OSC | SYSCTL_OSC_MAIN | SYSCTL_XTAL_16MHZ);
 
     SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER0);
-    TimerConfigure(TIMER0_BASE, TIMER_CFG_A_PERIODIC_UP);
-    TimerEnable(TIMER0_BASE, TIMER_A);
+    TimerConfigure(TIMER0_BASE, TIMER_CFG_PERIODIC_UP);
+    //TimerRTCEnable(TIMER0_BASE);
+    TimerEnable(TIMER0_BASE, TIMER_BOTH);
 
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
     GPIOPinConfigure(GPIO_PE4_CAN0RX);
@@ -175,12 +176,13 @@ int main(void)
         if (g_bRXFlag) {
             GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, GPIO_PIN_1);
 
-            uint32_t t = TimerValueGet(TIMER0_BASE,TIMER_A);
+            uint32_t tA = TimerValueGet(TIMER0_BASE,TIMER_A);
+            uint32_t tB = TimerValueGet(TIMER0_BASE,TIMER_B);
 
             sCANMessage.pui8MsgData = pui8MsgData;
             CANMessageGet(CAN0_BASE, 1, &sCANMessage, 0);
             g_bRXFlag = 0;
-            UARTprintf(":%08X",t);
+            UARTprintf(":%08X %08X",tA,tB);
             if(sCANMessage.ui32Flags & MSG_OBJ_DATA_LOST) {
                 UARTprintf(".ERROR\n");
                 sCANMessage.ui32Flags &= ~MSG_OBJ_DATA_LOST;
