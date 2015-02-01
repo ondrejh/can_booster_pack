@@ -176,13 +176,13 @@ int main(void)
         if (g_bRXFlag) {
             GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, GPIO_PIN_1);
 
-            //uint32_t tA = TimerValueGet(TIMER0_BASE,TIMER_A); // faster time ticks
-            uint32_t tB = TimerValueGet(TIMER0_BASE,TIMER_B); // slower time ticks
+            //uint32_t tFast = TimerValueGet(TIMER0_BASE,TIMER_A); // faster time ticks
+            uint32_t tSlow = TimerValueGet(TIMER0_BASE,TIMER_B); // slower time ticks
 
             sCANMessage.pui8MsgData = pui8MsgData;
             CANMessageGet(CAN0_BASE, 1, &sCANMessage, 0);
             g_bRXFlag = 0;
-            UARTprintf(":%04X",tB);
+            UARTprintf(":%04X",tSlow);
             if(sCANMessage.ui32Flags & MSG_OBJ_DATA_LOST) {
                 UARTprintf(".ERROR\n");
                 sCANMessage.ui32Flags &= ~MSG_OBJ_DATA_LOST;
