@@ -44,6 +44,7 @@
 #include "inc/hw_ints.h"
 #include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
+#include "inc/hw_gpio.h"
 #include "driverlib/can.h"
 #include "driverlib/debug.h"
 #include "driverlib/gpio.h"
@@ -69,6 +70,11 @@
 //! Library.
 //
 //*****************************************************************************
+
+#define LED_CAN_RX_ON() do{GPIOPinWrite(GPIO_PORTD_BASE,GPIO_PIN_6,GPIO_PIN_6);}while(0)
+#define LED_CAN_RX_OFF() do{GPIOPinWrite(GPIO_PORTD_BASE,GPIO_PIN_6,0);}while(0)
+#define LED_CAN_TX_ON() do{GPIOPinWrite(GPIO_PORTD_BASE,GPIO_PIN_7,GPIO_PIN_7);}while(0)
+#define LED_CAN_TX_OFF() do{GPIOPinWrite(GPIO_PORTD_BASE,GPIO_PIN_7,0);}while(0)
 
 //*****************************************************************************
 //
@@ -137,6 +143,18 @@ int main(void)
 
     SysCtlClockSet(SYSCTL_SYSDIV_1 | SYSCTL_USE_OSC | SYSCTL_OSC_MAIN | SYSCTL_XTAL_16MHZ);
 
+    // init CAN TX/RX led outputs
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
+    // unlock GPIOD7
+    HWREG(GPIO_PORTD_BASE + GPIO_O_LOCK) = GPIO_LOCK_KEY;
+    HWREG(GPIO_PORTD_BASE + GPIO_O_CR)  |= 0x80;
+    HWREG(GPIO_PORTD_BASE + GPIO_O_LOCK) = 0;
+    GPIOPinTypeGPIOOutput(GPIO_PORTD_BASE, GPIO_PIN_6|GPIO_PIN_7);
+    GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_6|GPIO_PIN_7, GPIO_PIN_6|GPIO_PIN_7);
+    SysCtlDelay(2000000);
+    GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_6|GPIO_PIN_7, 0);
+    SysCtlDelay(2000000);
+
     SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER0);
     TimerConfigure(TIMER0_BASE, TIMER_CFG_PERIODIC_UP);
     //TimerRTCEnable(TIMER0_BASE);
@@ -165,6 +183,10 @@ int main(void)
     //
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
     GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_1);
+
+    int32_t rxLedOn = 0;
+    uint32_t tRxLed = TimerValueGet(TIMER0_BASE,TIMER_B);
+    uint32_t last_tRxLed = tRxLed;
 
     //
     // Loop forever.
@@ -199,7 +221,20 @@ int main(void)
 
             //SysCtlDelay(100000);
             GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_1, 0);
+            rxLedOn = 10;
         }
+
+        // rx Led timing
+        tRxLed = TimerValueGet(TIMER0_BASE,TIMER_B);
+        rxLedOn -= (tRxLed-last_tRxLed);
+        if (rxLedOn<=0) {
+          rxLedOn = 0;
+          LED_CAN_RX_OFF();
+        }
+        else {
+          LED_CAN_RX_ON();
+        }
+        last_tRxLed = tRxLed;
 
         /*static int cnt = 0;
         UARTprintf("ahoj vole %d\n",cnt++);
