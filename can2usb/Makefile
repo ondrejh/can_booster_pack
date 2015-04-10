@@ -97,3 +97,6 @@ endif
 
 program:
 	openocd -f /usr/share/openocd/scripts/board/ek-lm4f120xl.cfg -c "program ./gcc/project.axf verify reset"
+
+program_win:
+	openocd -s "C:/Program Files/OpenOCD-0.8.0/share/openocd/scripts" -f board/ek-lm4f120xl.cfg -c "program ./gcc/project.axf verify reset"
