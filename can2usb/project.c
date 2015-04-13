@@ -76,6 +76,8 @@
 #define LED_CAN_TX_ON() do{GPIOPinWrite(GPIO_PORTD_BASE,GPIO_PIN_7,GPIO_PIN_7);}while(0)
 #define LED_CAN_TX_OFF() do{GPIOPinWrite(GPIO_PORTD_BASE,GPIO_PIN_7,0);}while(0)
 
+#define UART_RX_BUFF_SIZE 64
+
 //*****************************************************************************
 //
 // The error routine that is called if the driver library encounters an error.
@@ -129,6 +131,59 @@ void CANIntHandler(void)
   }
 }
 
+int h2i(char c)
+{
+    if ((c>='0') && (c<='9'))
+        return (c-'0');
+    if ((c>='A') && (c<='F'))
+        return (c-'A'+10);
+    if ((c>='a') && (c<='f'))
+        return (c-'a'+10);
+    return -1;
+}
+
+int UartUseBuffer(char *buff)
+{
+    int cnt;
+    char c;
+
+    uint32_t id = 0;
+    bool typeB = false;
+    int dlen = 0;
+    uint8_t data[8];
+
+    for (cnt=0;cnt<9;cnt++) {
+        c = *buff++;
+        if (c=='.')
+            break;
+        int i = h2i(c);
+        if (i<0)
+            break;
+        id<<=4;
+        id|=i;
+    }
+    if (cnt==8)
+        typeB = true;
+    else if (cnt==3)
+        typeB = false;
+    else
+        return -1; // wrong ID length (should be 3 for A or 8 for B type)
+    cnt++;
+
+    for (;cnt<UART_RX_BUFF_SIZE;cnt+=2) {
+        c = *buff++;
+        if ((c=='.')||(c=='\0'))
+            break;
+        int iH = h2i(c);
+        int iL = h2i(*buff++);
+        if ((iH<0)|(iL<0))
+            return -2;
+        data[dlen++]=(iH<<4)|iL;
+    }
+
+    UARTprintf("Ahoj\n");
+    return(0);
+}
 //*****************************************************************************
 //
 // Toggle a GPIO.
@@ -188,6 +243,8 @@ int main(void)
     uint32_t tRxLed = TimerValueGet(TIMER0_BASE,TIMER_B);
     uint32_t last_tRxLed = tRxLed;
 
+    int UartRxBuffCnt = 0;
+    char UartRxBuff[UART_RX_BUFF_SIZE];
     //UARTprintf("CAN booster pack FW .. receiving CanBus messages:\n");
 
     //
@@ -238,15 +295,20 @@ int main(void)
         }
         last_tRxLed = tRxLed;
 
+        //int chr = UARTCharGetNonBlocking(UART0_BASE);
+        //if (chr>=0) {
         if (UARTCharsAvail(UART0_BASE)) {
-            char c = UARTCharGetNonBlocking(UART0_BASE);
+            //char c = chr;
+            char c = UARTCharGet(UART0_BASE);
             if (c==':') {
                 // reset
                 UartRxBuffCnt=0;
+                LED_CAN_TX_ON();
             }
-            else if (c=='\n') {
+            else if ((c=='\r')||(c=='\n')) {
                 // insert end of string
-                UartRxBuff[UartRxBuff]='\0';
+                UartRxBuff[UartRxBuffCnt]='\0';
+                LED_CAN_TX_OFF();
             }
             else {
                 UartRxBuff[UartRxBuffCnt++] = c;
