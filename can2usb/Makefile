@@ -45,7 +45,7 @@ PART=TM4C123GH6PM
 #
 # The base directory for TivaWare.
 #
-ROOT=../..
+ROOT=D:/Projekty/TivaWare_C_Series-2.1.4.178
 
 #
 # Include the common make definitions.
@@ -55,12 +55,12 @@ include ${ROOT}/makedefs
 #
 # Where to find source files that do not live in this directory.
 #
-VPATH=../../utils
+VPATH=${ROOT}/utils
 
 #
 # Where to find header files that do not live in the source directory.
 #
-IPATH=../..
+IPATH=${ROOT}
 
 #
 # The default rule, which causes the project example to be built.
@@ -108,4 +108,4 @@ program:
 	openocd -f /usr/share/openocd/scripts/board/ek-lm4f120xl.cfg -c "program ./gcc/project.axf verify reset"
 
 program_win:
-	openocd -s "C:/Program Files/OpenOCD-0.8.0/share/openocd/scripts" -f board/ek-lm4f120xl.cfg -c "program ./gcc/project.axf verify reset"
+	openocd -s "C:/Program Files/OpenOCD/scripts" -f board/ek-lm4f120xl.cfg -c "program ./gcc/project.axf verify reset exit"
