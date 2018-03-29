@@ -17,13 +17,14 @@ def decode_message(line):
         data.append(int(s[2][i*2:i*2+2], 16))
     return tstm, typ, id, dlen, data
 
-
-def message_content_note(mtype, id, data):
-    if mtype == 'B':
-        return "CAN Bootloader"
-    if id==0x80:
-        return "Synchronization"
-    return ''
+try:
+    from secret_decoder import message_content_note
+except ImportError:
+    def message_content_note(mtype, id, data):
+        if mtype == 'B':
+            return "CAN message type B"
+        else:
+            return "CAN message type A"
 
 with Serial(port_name, port_baudrate, timeout=0.1) as port:
     while True:
@@ -31,6 +32,11 @@ with Serial(port_name, port_baudrate, timeout=0.1) as port:
         if True:
             message = decode_message(port.readline())
             note = message_content_note(message[1], message[2], message[4])
-            print(message, note)
+            print('{:5d} {} {} '.format(message[0], message[1],
+                                        ("     {:03X}" if message[1] == 'A' else "{:08X}").format(message[2])), end='')
+            dlen = len(message[4])
+            for i in range(8):
+                print(' {:02X}'.format(message[4][i]) if i<dlen else '   ', end='')
+            print('  {}'.format(note))
         #except:
         #    pass
