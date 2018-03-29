@@ -7,3 +7,4 @@ can2usb/gcc/*.o
 *-bak
 can2usb/*.layout
 20150109_objednavka_pragoboard.doc
+decode/.idea/
