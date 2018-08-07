@@ -29,7 +29,7 @@ except ImportError:
             return "CAN message type B"
         else:
             return "CAN message type A"
-        return ''
+        #return ''
 
     def message_filter(mtype, id, data):
         return True
@@ -39,14 +39,17 @@ with Serial(port_name, port_baudrate, timeout=0.1) as port:
     while True:
         try:
         #if True:
-            (tStamp, mType, mId, mLen, mData) = decode_message(port.readline())
-            if message_filter(mType, mId, mData):
-                note = message_content_note(mType, mId, mData)
-                print('{:5d} {} {} '.format(tStamp, mType,
-                                            ("     {:03X}" if mType == 'A' else "{:08X}").format(mId)), end='')
-                dlen = len(mData)
-                for i in range(8):
-                    print(' {:02X}'.format(mData[i]) if i < dlen else '   ', end='')
-                print('  {}'.format(note))
+            line = port.readline()
+            if line != b'':
+                (tStamp, mType, mId, mLen, mData) = decode_message(line)
+                if message_filter(mType, mId, mData):
+                    note = message_content_note(mType, mId, mData)
+                    print('{:5d} {} {} '.format(tStamp, mType,
+                                                ("     {:03X}" if mType == 'A' else "{:08X}").format(mId)), end='')
+                    dlen = len(mData)
+                    for i in range(8):
+                        print(' {:02X}'.format(mData[i]) if i < dlen else '   ', end='')
+                    print('  {}'.format(note))
         except:
+            print('Decode ERROR: {}'.format(line))
             pass
