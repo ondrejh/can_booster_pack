@@ -221,7 +221,8 @@ int main(void)
     GPIOPinTypeCAN(GPIO_PORTE_BASE, GPIO_PIN_4 | GPIO_PIN_5);
     SysCtlPeripheralEnable(SYSCTL_PERIPH_CAN0);
     CANInit(CAN0_BASE);
-    CANBitRateSet(CAN0_BASE, SysCtlClockGet(), 125000);
+    //CANBitRateSet(CAN0_BASE, SysCtlClockGet(), 125000);
+    CANBitRateSet(CAN0_BASE, SysCtlClockGet(), 250000);
     CANIntEnable(CAN0_BASE, CAN_INT_MASTER | CAN_INT_ERROR | CAN_INT_STATUS);
     IntEnable(INT_CAN0);
     CANEnable(CAN0_BASE);
